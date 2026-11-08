@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#10152c" />
+  <title>A: surat wasiat ✦</title>
+  <style>
+    :root {
+      --night: #0c1024;
+      --night-2: #141b38;
+      --blue: #a9c9f3;
+      --blue-light: #d9eaff;
+      --yellow: #ffe7a0;
+      --yellow-deep: #f5cf70;
+      --ink: #17213b;
+      --muted: #586681;
+      --glass: rgba(242, 247, 255, .91);
+      --line: rgba(255, 255, 255, .34);
+      --shadow: 0 22px 70px rgba(0, 0, 0, .32);
+    }
+
+    * { box-sizing: border-box; }
+    /* Rounded and handwritten system fonts: playful, but no external download required. */
+    html { min-height: 100%; }
+    body {
+      position: relative;
+      isolation: isolate;
+      margin: 0;
+      min-height: 100vh;
+      color: #f7f4e9;
+      font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+      background: var(--night);
+      overflow-x: hidden;
+    }
+    .night-background {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background:
+        linear-gradient(135deg, rgba(8, 12, 31, .70), rgba(14, 22, 48, .73)),
+        url("assets/langit-berbintang.jpg") center / cover no-repeat,
+        var(--night);
+    }
+    main { position: relative; z-index: 1; }
+
+    body::before, body::after {
+      content: "✦";
+      position: fixed;
+      z-index: 0;
+      color: rgba(255, 231, 160, .72);
+      pointer-events: none;
+      animation: float 7s ease-in-out infinite;
+    }
+    body::before { top: 13%; left: 7%; font-size: 22px; }
+    body::after { right: 8%; bottom: 13%; font-size: 30px; animation-delay: -3s; }
+    @keyframes float { 0%,100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-12px) rotate(14deg); } }
+
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+    .screen {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 28px 18px;
+    }
+    .hidden { display: none !important; }
+    .visually-hidden {
+      position: absolute !important;
+      width: 1px !important;
+      height: 1px !important;
+      padding: 0 !important;
+      margin: -1px !important;
+      overflow: hidden !important;
+      clip: rect(0, 0, 0, 0) !important;
+      white-space: nowrap !important;
+      border: 0 !important;
+    }
+
+    /* PASSWORD GATE */
+    .gate-card {
+      width: min(100%, 470px);
+      position: relative;
+      overflow: hidden;
+      padding: 30px;
+      border: 1px solid var(--line);
+      border-radius: 27px;
+      background: rgba(20, 27, 56, .88);
+      box-shadow: var(--shadow);
+      text-align: center;
+      backdrop-filter: blur(12px);
+    }
+    .gate-card::before {
+      content: "";
+      position: absolute;
+      width: 230px; height: 230px;
+      right: -115px; top: -145px;
+      border-radius: 50%;
+      background: rgba(255, 231, 160, .14);
+    }
+    .gate-art {
+      display: block;
+      width: min(100%, 250px);
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      margin: 0 auto 20px;
+      border: 4px solid rgba(255, 231, 160, .78);
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.28);
+      image-rendering: pixelated;
+    }
+    .tiny-label {
+      margin: 0 0 9px;
+      color: var(--yellow);
+      font-size: .72rem;
+      font-weight: 800;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+    }
+    h1, h2, p { overflow-wrap: anywhere; }
+    .gate-card h1 {
+      margin: 0 0 9px;
+      color: #f5f7ff;
+      font-family: "Segoe Print", "Comic Sans MS", "Trebuchet MS", cursive;
+      font-size: clamp(1.8rem, 5vw, 2.4rem);
+      font-weight: 500;
+    }
+    .gate-subtitle { margin: 0 0 23px; color: #c8d6ee; line-height: 1.65; }
+    .password-form { display: flex; gap: 9px; }
+    .password-form input {
+      min-width: 0;
+      flex: 1;
+      padding: 14px 15px;
+      color: #15213c;
+      background: #f4f7ff;
+      border: 2px solid transparent;
+      border-radius: 13px;
+      outline: none;
+    }
+    .password-form input:focus { border-color: var(--yellow-deep); box-shadow: 0 0 0 3px rgba(255,231,160,.18); }
+    .primary-btn, .secondary-btn {
+      border: 0;
+      border-radius: 13px;
+      padding: 13px 18px;
+      font-weight: 800;
+      transition: transform .2s ease, filter .2s ease;
+    }
+    .primary-btn { color: #24304d; background: var(--yellow); box-shadow: 0 7px 18px rgba(245,207,112,.2); }
+    .primary-btn:hover, .secondary-btn:hover { transform: translateY(-2px); filter: brightness(1.04); }
+    .error-message { min-height: 25px; margin: 13px 0 0; color: #ffc2cb; font-weight: 800; }
+    .gate-foot { margin: 7px 0 0; color: #9cacc8; font-size: .78rem; }
+
+    /* MAIN EXPERIENCE */
+    .experience {
+      width: min(1120px, 100%);
+      margin: auto;
+      display: flex;
+      flex-direction: column;
+    }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      margin: 0 0 18px;
+      color: #dce8ff;
+      font-size: .83rem;
+      letter-spacing: .05em;
+    }
+    .brand { display: flex; align-items: center; gap: 9px; font-weight: 800; }
+    .brand-star { color: var(--yellow); font-size: 1.25rem; }
+    .page-count { color: var(--yellow); font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .story-card {
+      min-height: min(560px, calc(100svh - 200px));
+      max-height: min(680px, calc(100svh - 180px));
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      display: flex;
+      align-items: center;
+      gap: clamp(24px, 5vw, 62px);
+      padding: clamp(20px, 4vw, 44px);
+      color: var(--ink);
+      background: var(--glass);
+      border: 1px solid rgba(255,255,255,.65);
+      border-radius: 30px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+      animation: appear .45s ease both;
+    }
+    @keyframes appear { from { opacity: 0; transform: translateY(12px) scale(.99); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    .story-layout { flex-direction: row; }
+    .story-layout.image-right { flex-direction: row-reverse; }
+    .photo-column, .copy-column { flex: 1 1 50%; min-width: 0; }
+    .photo-frame {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      border: 7px solid white;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #a9c9f3, #e6d9ad 55%, #9badd0);
+      box-shadow: 0 15px 34px rgba(24, 42, 78, .17);
+    }
+    .photo-frame img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 30%;
+    }
+    .photo-fallback {
+      position: absolute;
+      inset: 0;
+      display: none;
+      place-content: center;
+      gap: 7px;
+      padding: 16px;
+      color: #1d2b4d;
+      text-align: center;
+      background:
+        radial-gradient(circle at 22% 23%, rgba(255,255,255,.65) 0 2px, transparent 3px),
+        radial-gradient(circle at 78% 68%, rgba(255,255,255,.55) 0 2px, transparent 3px),
+        linear-gradient(135deg, #b7d4f5, #f8e8b7);
+    }
+    .photo-fallback .fallback-star { color: #fff7d5; font-size: 2.3rem; text-shadow: 0 2px 7px rgba(36,48,77,.3); }
+    .photo-fallback strong { font-family: "Segoe Print", "Comic Sans MS", cursive; font-size: 1.3rem; }
+    .photo-fallback small { color: #52627e; }
+    .photo-caption { margin: 12px 0 0; color: #55657f; font-size: .82rem; text-align: center; letter-spacing: .05em; }
+    .copy-column { padding: 8px 2px; }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 15px;
+      color: #4f6588;
+      font-size: .8rem;
+      font-weight: 900;
+      letter-spacing: .17em;
+      text-transform: uppercase;
+    }
+    .eyebrow::before { content: "✦"; color: #d8ad48; font-size: 1rem; }
+    .copy-column h1, .ending-card h1 {
+      margin: 0 0 18px;
+      color: #1a2949;
+      font-family: "Segoe Print", "Comic Sans MS", "Trebuchet MS", cursive;
+      font-size: clamp(2rem, 4vw, 3.25rem);
+      font-weight: 500;
+      line-height: 1.08;
+    }
+    .story-text { margin: 0; color: #4d5b77; font-size: clamp(.98rem, 1.5vw, 1.08rem); line-height: 1.9; white-space: pre-line; }
+    .little-note { margin: 22px 0 0; color: #7a5f20; font-family: "Segoe Print", "Comic Sans MS", cursive; font-size: .98rem; font-style: normal; }
+
+    .ending-card {
+      min-height: min(560px, calc(100svh - 200px));
+      max-height: min(680px, calc(100svh - 180px));
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      display: grid;
+      place-items: center;
+      padding: clamp(26px, 6vw, 70px);
+      color: var(--ink);
+      text-align: center;
+      background: var(--glass);
+      border: 1px solid rgba(255,255,255,.65);
+      border-radius: 30px;
+      box-shadow: var(--shadow);
+      animation: appear .45s ease both;
+    }
+    .ending-inner { width: min(700px, 100%); }
+    .ending-stars { margin: 0 0 20px; color: #d8ad48; font-size: 2rem; letter-spacing: .35em; }
+    .ending-card h1 { font-size: clamp(2.4rem, 6vw, 4.5rem); }
+    .ending-card .story-text {
+      max-width: 62ch;
+      margin-inline: auto;
+      font-size: clamp(1rem, 2vw, 1.15rem);
+      text-align: left;
+    }
+    .signature { margin: 29px 0 0; color: #6f5722; font-family: "Segoe Print", "Comic Sans MS", cursive; font-size: 1.2rem; font-style: normal; }
+
+    .controls {
+      position: sticky;
+      bottom: 0;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-top: 14px;
+      padding: 6px 0;
+      backdrop-filter: blur(10px);
+    }
+    .dots { display: flex; align-items: center; gap: 1px; flex-wrap: wrap; }
+    .dot {
+      position: relative;
+      display: grid;
+      place-items: center;
+      flex: 0 0 44px;
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      border: 0;
+      border-radius: 99px;
+      background: transparent;
+      touch-action: manipulation;
+    }
+    .dot::before {
+      content: "";
+      display: block;
+      width: 8px;
+      height: 8px;
+      border-radius: 99px;
+      background: rgba(220,232,255,.55);
+      transition: width .2s ease, background .2s ease;
+    }
+    .dot.active::before { width: 25px; background: var(--yellow); }
+    .dot:focus-visible { outline: 2px solid var(--yellow); outline-offset: -3px; }
+    .nav-buttons { display: flex; gap: 9px; }
+    .secondary-btn { color: #e9f0ff; background: rgba(174, 201, 239, .18); border: 1px solid rgba(221,234,255,.32); }
+    .secondary-btn:disabled { opacity: .35; cursor: not-allowed; transform: none; }
+    .nav-buttons .primary-btn { min-width: 132px; }
+    .bottom-hint { margin: 9px 0 0; color: rgba(235,241,255,.82); font-size: .8rem; text-align: center; }
+
+    @media (max-width: 760px) {
+      .screen { padding: 18px 13px; }
+      .story-card {
+        min-height: 0;
+        max-height: calc(100svh - 170px);
+        flex-direction: column;
+        gap: 22px;
+        border-radius: 23px;
+      }
+      .story-layout.image-right { flex-direction: column; }
+      .ending-card {
+        min-height: 0;
+        max-height: calc(100svh - 170px);
+      }
+      .photo-column, .copy-column { flex: auto; width: 100%; }
+      .copy-column { padding: 0 2px 4px; }
+      .copy-column h1 { font-size: clamp(1.9rem, 9vw, 2.7rem); }
+      .ending-card { border-radius: 23px; }
+      .topbar { font-size: .72rem; }
+      .controls { align-items: flex-end; }
+      .dots { max-width: 184px; }
+      .nav-buttons .primary-btn { min-width: 0; }
+      .bottom-hint { margin-top: 5px; }
+    }
+    @media (max-width: 430px) {
+      .gate-card { padding: 23px 18px; }
+      .password-form { flex-direction: column; }
+      .password-form .primary-btn { width: 100%; }
+      .story-card { padding: 18px; }
+      .controls { flex-direction: column; align-items: stretch; }
+      .dots { justify-content: center; align-self: center; max-width: 184px; }
+      .nav-buttons { justify-content: space-between; }
+      .nav-buttons button { flex: 1; }
+    }
+    @media (hover: none) {
+      .bottom-hint { display: none; }
+      .experience { touch-action: pan-y; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="night-background" aria-hidden="true"></div>
+  <main>
+    <section id="gate" class="screen" aria-label="Pass required :p">
+      <div class="gate-card">
+        <img class="gate-art" src="assets/astronaut-pixel.jpg" alt="Ilustrasi astronot kecil di langit malam" />
+        <p class="tiny-label">a: surat wasiat</p>
+        <h1>Masukin sandi</h1>
+        <p class="gate-subtitle">Seutas pesan,<br />Dari kabid tukang gatekeep✦</p>
+        <form id="passwordForm" class="password-form">
+          <input id="passwordInput" type="password" placeholder="Kata sandi..." autocomplete="off" aria-label="Kata sandi" required />
+          <button class="primary-btn" type="submit">Masuk ✦</button>
+        </form>
+        <p id="errorMessage" class="error-message" role="status" aria-live="polite"></p>
+        <p class="gate-foot">dibuat karena kabid lo gabisa WoA</p>
+      </div>
+    </section>
+
+    <section id="experience" class="screen hidden" aria-label="Hai Pulupulu!">
+      <div class="experience">
+        <header class="topbar">
+          <div class="brand"><span class="brand-star">✦</span> A: surat wasiat</div>
+          <div id="pageCount" class="page-count">01 / 08</div>
+        </header>
+        <div id="slideHost"></div>
+        <p id="slideAnnouncement" class="visually-hidden" aria-live="polite" aria-atomic="true"></p>
+        <nav class="controls" aria-label="Navigasi halaman">
+          <div id="dots" class="dots"></div>
+          <div class="nav-buttons">
+            <button id="prevButton" class="secondary-btn" type="button">← Kembali</button>
+            <button id="nextButton" class="primary-btn" type="button">Selanjutnya →</button>
+          </div>
+        </nav>
+        <p class="bottom-hint">Gunakan tombol panah atau geser untuk berpindah halaman · ✦</p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    /* =========================================================
+       BAGIAN YANG PALING SERING KAMU CUSTOM ADA DI SINI!
+       1. Ganti PASSWORD.
+       2. Ganti judul, teks, dan nama foto pada 7 objek di bawah.
+       3. Ganti isi halaman penutup di bagian ENDING.
+       ========================================================= */
+
+    const PASSWORD = "spica"; // Ubah kata sandi di antara tanda kutip.
+
+    const pages = [
+      {
+        title: "Hai Hubs Pulupulu",
+        text: "For the 1st time in entire my life, aku jadi Kabid. I'm afraid I won't be able to keep up with everything sooner or later.\n\nI only hope that I'll finish this ASAP ",
+        photo: "photos/basoli.jpeg",
+        alt: "Foto kenangan saat first meet di Basoli",
+        caption: "First meet at Basoli",
+        side: "left"
+      },
+      {
+        title: "First proker: HubStar✦",
+        text: "Proker pertama, aku gatau harus apa as kabid. Thanks buat Fira and Issa yang udah jadi PO-VPO keren.\n\nSemoga HubStar tahun depan rame yaaa!",
+        photo: "photos/hubstar.jpeg",
+        alt: "Foto kenangan kegiatan HubStar",
+        caption: "First Proker",
+        side: "right"
+      },
+      {
+        title: "Meddips: The Last",
+        text: "Aku benci, tapi makasi buat orang-orang yang udah selalu ada. Seandainya bukan karena... ah sudahlah.\n\nTo Fiqa, semangat, jangan ragu seandainya ada kesempatan keluar meddips",
+        photo: "photos/meddips.jpeg",
+        alt: "Foto kenangan kegiatan Meddips",
+        caption: "Well-Hated proker",
+        side: "left"
+      },
+      {
+        title: "Open House",
+        text: "Ketemu maba atau ketemu rama :o. Well done PO-VPO, thanks buat Issa udah pegang 2 proker dan dua duanya run smooth, also thanks to Laya yang meskipun di hari-H gaada tapi tetep standby 24/7. Oya, taun depan lempar ke litbang ya :v\n\n",
+        photo: "photos/ophos.jpeg",
+        alt: "Foto kenangan kegiatan Open House",
+        caption: "Proker salah bidang",
+        side: "right"
+      },
+      {
+        title: "Stuban-Out",
+        text: "Satu-satunya kontribusi gwe cuma naikin RKAT buat proker ini. Good job PO-VPO terutama Ben, you really nailed it.",
+        photo: "photos/stubot.jpeg",
+        alt: "Foto kenangan kegiatan Stuban-Out",
+        caption: "Dapet temen baru",
+        side: "left"
+      },
+      {
+        title: "Stuban In",
+        text: "Proker menyebalkan #2 setelah meddips, hampir semuanya buta, 10 orang panitia vs 230+ peserta. Sekali lagi, maaf banget aku ga mau oprec panit karena alasan pribadi yang gabisa aku kasih tau :p. Greatjob All, terutama Ara dan Mabel,  you guys are really hardworker. To mabel, I'd say Thanks udah jalanin apa yang aku minta. To Ara, kamu keren udah bertahan",
+        photo: "photos/stubin.jpeg",
+        alt: "Foto kenangan kegiatan Stuban In",
+        caption: "kecewa gaada teteh unpad",
+        side: "right"
+      },
+      {
+        title: "Harusnya ICE...",
+        text: "Well, maaf kalau aku menyampingkan proker ini karena aku udah muak organisasi XD. Aku buat ini sebelum ICE dimulai, so aku cuma bisa bilang ICE itu proker canvas dan masih bisa diexplore seandainya kalian mau. To Dapa, yah makasih dan maaf. To Ais, semoga tahun depan lebih baik!",
+        photo: "photos/foto-7.jpeg",
+        alt: "Foto kenangan kegiatan ICE",
+        caption: "prokernya blm jalan T_T",
+        side: "left"
+      }
+    ];
+
+    const ENDING = {
+      eyebrow: "Last Page · WoA dari kabid lo",
+      title: "Thanks. ✦",
+      text: "In the end, aku ga pernah bisa mencapai hal yang sama seperti yang dilakukannya. To another me, please forgive me. \n\nTo Staffli, makasi banyak udah bertahan dan maaf kalau aku seakan bikin gap sama kalian. \n\nTo Staffmud, kalian semua keren. Gwe bangga punya staffmud kayak kalian",
+      signature: "Sekian, aku pamit"
+    };
+
+    /* =========================================================
+       BAGIAN DI BAWAH INI ADALAH MESIN WEBSITE-NYA.
+       Sebaiknya jangan diubah dulu saat baru belajar custom.
+       ========================================================= */
+    const gate = document.getElementById("gate");
+    const experience = document.getElementById("experience");
+    const passwordForm = document.getElementById("passwordForm");
+    const passwordInput = document.getElementById("passwordInput");
+    const errorMessage = document.getElementById("errorMessage");
+    const slideHost = document.getElementById("slideHost");
+    const slideAnnouncement = document.getElementById("slideAnnouncement");
+    const pageCount = document.getElementById("pageCount");
+    const dots = document.getElementById("dots");
+    const prevButton = document.getElementById("prevButton");
+    const nextButton = document.getElementById("nextButton");
+    const totalPages = pages.length + 1;
+    const dotButtons = [];
+    let currentPage = 0;
+
+    // Buat titik navigasi satu kali agar fokus keyboard tidak hilang saat berpindah slide.
+    function createDots() {
+      dots.innerHTML = "";
+      for (let i = 0; i < totalPages; i++) {
+        const dot = document.createElement("button");
+        dot.type = "button";
+        dot.className = "dot";
+        dot.setAttribute("aria-label", `Buka halaman ${i + 1}`);
+        dot.addEventListener("click", () => {
+          currentPage = i;
+          renderPage();
+        });
+        dots.appendChild(dot);
+        dotButtons.push(dot);
+      }
+    }
+    createDots();
+
+    passwordForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      if (passwordInput.value === PASSWORD) {
+        errorMessage.textContent = "";
+        gate.classList.add("hidden");
+        experience.classList.remove("hidden");
+        renderPage();
+      } else {
+        errorMessage.textContent = "salah yeu :p";
+        passwordInput.value = "";
+        passwordInput.focus();
+      }
+    });
+
+    function renderPage() {
+      const pageNumber = String(currentPage + 1).padStart(2, "0");
+      pageCount.textContent = `${pageNumber} / ${String(totalPages).padStart(2, "0")}`;
+      prevButton.disabled = currentPage === 0;
+      nextButton.textContent = currentPage === totalPages - 1 ? "Ulangi dari awal ↺" : "Selanjutnya →";
+
+      if (currentPage < pages.length) {
+        const page = pages[currentPage];
+        slideHost.innerHTML = `
+          <article class="story-card story-layout ${page.side === "right" ? "image-right" : "image-left"}">
+            <div class="photo-column">
+              <div class="photo-frame">
+                <img class="slide-photo" src="${escapeHTML(page.photo)}" alt="${escapeHTML(page.alt)}" style="object-position: ${escapeHTML(page.objectPosition || "center 30%")}" />
+                <div class="photo-fallback">
+                  <span class="fallback-star">✦</span>
+                  <strong>Foto belum tersedia ✦</strong>
+                </div>
+              </div>
+              <p class="photo-caption">${escapeHTML(page.caption)}</p>
+            </div>
+            <div class="copy-column">
+              <p class="eyebrow">A: notes · ${pageNumber}</p>
+              <h1>${escapeHTML(page.title)}</h1>
+              <p class="story-text">${escapeHTML(page.text)}</p>
+              ${currentPage === 0 ? '<p class="little-note">a tiny piece of my universe ✧</p>' : ''}
+            </div>
+          </article>`;
+
+        const photo = slideHost.querySelector(".slide-photo");
+        const fallback = slideHost.querySelector(".photo-fallback");
+        photo.addEventListener("load", () => {
+          photo.style.display = "block";
+          fallback.style.display = "none";
+        }, { once: true });
+        photo.addEventListener("error", () => {
+          photo.style.display = "none";
+          fallback.style.display = "grid";
+        }, { once: true });
+        // Cek juga complete untuk gambar yang sudah masuk cache sebelum listener dipasang.
+        if (photo.complete) {
+          if (photo.naturalWidth > 0) {
+            photo.style.display = "block";
+            fallback.style.display = "none";
+          } else {
+            photo.style.display = "none";
+            fallback.style.display = "grid";
+          }
+        }
+        slideAnnouncement.textContent = `Halaman ${pageNumber} dari ${totalPages}: ${page.title}`;
+      } else {
+        slideHost.innerHTML = `
+          <article class="ending-card">
+            <div class="ending-inner">
+              <p class="ending-stars">✦ · ˚　　✧　　˚ · ✦</p>
+              <p class="eyebrow">${escapeHTML(ENDING.eyebrow)}</p>
+              <h1>${escapeHTML(ENDING.title)}</h1>
+              <p class="story-text">${escapeHTML(ENDING.text)}</p>
+              <p class="signature">${escapeHTML(ENDING.signature)}</p>
+            </div>
+          </article>`;
+        slideAnnouncement.textContent = `Halaman terakhir, ${ENDING.title}`;
+      }
+
+      dotButtons.forEach((dot, index) => {
+        const active = index === currentPage;
+        dot.classList.toggle("active", active);
+        if (active) dot.setAttribute("aria-current", "page");
+        else dot.removeAttribute("aria-current");
+      });
+    }
+
+    function escapeHTML(value) {
+      return String(value).replace(/[&<>"']/g, (char) => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+      })[char]);
+    }
+
+    prevButton.addEventListener("click", () => {
+      if (currentPage > 0) { currentPage--; renderPage(); }
+    });
+    nextButton.addEventListener("click", () => {
+      currentPage = currentPage === totalPages - 1 ? 0 : currentPage + 1;
+      renderPage();
+    });
+    document.addEventListener("keydown", (event) => {
+      if (experience.classList.contains("hidden")) return;
+      if (event.key === "ArrowRight" && currentPage < totalPages - 1) { currentPage++; renderPage(); }
+      if (event.key === "ArrowLeft" && currentPage > 0) { currentPage--; renderPage(); }
+    });
+
+    // Swipe horizontal di HP; gerakan vertikal tetap dipakai untuk scroll isi slide.
+    let touchStartX = 0;
+    let touchStartY = 0;
+    experience.addEventListener("touchstart", (event) => {
+      if (event.target.closest("button, input, a")) {
+        touchStartX = 0;
+        touchStartY = 0;
+        return;
+      }
+      const touch = event.changedTouches[0];
+      touchStartX = touch.clientX;
+      touchStartY = touch.clientY;
+    }, { passive: true });
+
+    experience.addEventListener("touchend", (event) => {
+      if (experience.classList.contains("hidden") || touchStartX === 0) return;
+      const touch = event.changedTouches[0];
+      const deltaX = touch.clientX - touchStartX;
+      const deltaY = touch.clientY - touchStartY;
+      touchStartX = 0;
+      touchStartY = 0;
+      if (Math.abs(deltaX) < 50 || Math.abs(deltaX) <= Math.abs(deltaY)) return;
+      if (deltaX < 0 && currentPage < totalPages - 1) {
+        currentPage++;
+        renderPage();
+      } else if (deltaX > 0 && currentPage > 0) {
+        currentPage--;
+        renderPage();
+      }
+    }, { passive: true });
+  </script>
+</body>
+</html>
